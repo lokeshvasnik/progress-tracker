@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Button from "../components/Button"
 import { Line, LineChart, ResponsiveContainer, XAxis } from 'recharts';
 
@@ -48,6 +49,12 @@ const data = [
 ];
 
 const Dashboard = () => {
+    const [modalOpen, setIsModalOpen] = useState(false)
+
+    const closeModalHandler = () => {
+        setIsModalOpen(false)
+    };
+
     return (
         <div className="max-w-9/12 mx-auto">
             <h1 className="font-black text-4xl my-4">Welcome back, Emily!</h1>
@@ -79,7 +86,17 @@ const Dashboard = () => {
             </div>
 
             <div className="mb-10">
-                <Button className="bg-blue-400 mx-2 rounded-md text-white cursor-pointer">Add Progress</Button>
+                <button onClick={() => setIsModalOpen(true)} className="bg-blue-400 mx-2 rounded-md text-white cursor-pointer">Add Progress</button>
+            </div>
+
+            <div className={`absolute top-0 right-0 w-[600px] h-screen bg-white p-8 shadow-lg bg-opacity-40 z-40 ${modalOpen ? 'block':'hidden'}`}>
+                <h4 className="font-medium text-xl mb-4">Modal</h4>
+                <button
+                    onClick={closeModalHandler}
+                    className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md`}
+                >
+                    Cancel
+                </button>
             </div>
 
         </div>
