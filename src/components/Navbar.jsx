@@ -1,10 +1,11 @@
+import { Link } from "react-router-dom"
 import Button from "./Button"
 
 const Navbar = () => {
   return (
     <nav className="flex justify-between p-5 border-b-2 border-gray-200">
         <div>
-            <h1 className="font-bold">CodeUp</h1>
+            <h1 className="font-bold"><Link to="/">CodeUp</Link></h1>
         </div>
         <div>
             <ul className="inline-flex space-x-5 mx-4">
@@ -12,8 +13,12 @@ const Navbar = () => {
                 <li>Pricing</li>
                 <li>Support</li>
             </ul>
-            <Button className="bg-blue-400 mx-2 rounded-md text-white cursor-pointer">Log in</Button>
-            <Button className="bg-gray-300 rounded-md text-black cursor-pointer">Sign Up</Button>
+            <Button className="bg-blue-400 mx-2 rounded-md text-white cursor-pointer">
+              <Link to="/login">Log in</Link>
+            </Button>
+            <Button className="bg-gray-300 rounded-md text-black cursor-pointer">
+              <Link to="/register">Sign Up</Link>
+            </Button>
         </div>
     </nav>
   )
