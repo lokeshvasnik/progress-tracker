@@ -86,17 +86,90 @@ const Dashboard = () => {
             </div>
 
             <div className="mb-10">
-                <button onClick={() => setIsModalOpen(true)} className="bg-blue-400 mx-2 rounded-md text-white cursor-pointer">Add Progress</button>
+                <Button onClick={() => setIsModalOpen(true)} className="bg-blue-400 mx-2 rounded-md text-white cursor-pointer">Add Progress</Button>
             </div>
 
-            <div className={`absolute top-0 right-0 w-[600px] h-screen bg-white p-8 shadow-lg bg-opacity-40 z-40 ${modalOpen ? 'block':'hidden'}`}>
+            <div className={`fixed top-0 right-0 w-[600px] overflow-auto h-screen bg-white p-8 shadow-lg bg-opacity-40 z-40 ${modalOpen ? 'block':'hidden'}`}>
                 <h4 className="font-medium text-xl mb-4">Modal</h4>
+                <h1 className="font-black text-4xl my-4">Welcome back, Emily!</h1>
+
+                <form className="space-y-4">
+                <div>
+                    <label htmlFor="title" className="block font-medium mb-1">Today's Title</label>
+                    <input
+                    id="title"
+                    type="text"
+                    placeholder="What did you learn?"
+                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="description" className="block font-medium mb-1">Description</label>
+                    <textarea
+                    id="description"
+                    placeholder="Write a detailed description..."
+                    className="w-full border border-gray-300 p-2 rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="category" className="block font-medium mb-1">Category</label>
+                    <select
+                    id="category"
+                    name="category"
+                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                    <option value="">Select category</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="react">React</option>
+                    <option value="dsa">DSA</option>
+                    <option value="project">Project</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label htmlFor="mood" className="block font-medium mb-1">Mood</label>
+                    <select
+                    id="mood"
+                    name="mood"
+                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                    <option value="">How do you feel?</option>
+                    <option value="happy">😄 Happy</option>
+                    <option value="ok">😐 Okay</option>
+                    <option value="sad">😞 Tired</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label htmlFor="productivity" className="block font-medium mb-1">Productivity</label>
+                    <select
+                    id="productivity"
+                    name="productivity"
+                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                    <option value="">Rate your productivity</option>
+                    <option value="1">😴 1 - Lazy</option>
+                    <option value="5">😐 5 - Average</option>
+                    <option value="10">🚀 10 - Super productive</option>
+                    </select>
+                </div>
+
                 <button
+                    type="submit"
+                    className="w-full mt-4 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+                >
+                    Submit Progress
+                </button>
+                </form>
+
+                <Button
                     onClick={closeModalHandler}
-                    className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md`}
+                    className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md mt-5`}
                 >
                     Cancel
-                </button>
+                </Button>
             </div>
 
         </div>
