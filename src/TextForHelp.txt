@@ -1,0 +1,33 @@
+Private data endpoints > Crud
+
+https://crudcrud.com/api/a6d79d4fd6024834b9f14670fa683783 > api key
+
+Successfully able to add the data in the database 
+
+Authenction
+
+1. Login
+
+2. Signup
+
+Using firebase
+
+
+Formula for progress percentage %
+
+🔍 1. Progress Over Time: 40%
+✅ What it means:
+You’re probably tracking a 30-day challenge, and want to show how much of it is completed.
+
+progressPercent = (numberOfDaysWithProgress / 30) * 100
+🧠 Example:
+
+
+const totalChallengeDays = 30;
+const currentProgressDays = data.length;
+
+const progressPercent = Math.round((currentProgressDays / totalChallengeDays) * 100);
+
+progressPercent = Math.round((17 / 30) * 100) = 57%
+
+

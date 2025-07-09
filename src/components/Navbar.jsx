@@ -12,16 +12,15 @@ const Navbar = () => {
         <h1 className="font-bold"><Link to="/">CodeUp</Link></h1>
       </div>
       <div>
-        {isAuthenticated ? <ul className="inline-flex space-x-5 mx-4">
+        {isAuthenticated ? <ul className="inline-flex space-x-5 mx-4 items-center">
           <li>Dashboard</li>
           <li>Roadmaps</li>
           <li>Challenges</li>
           <li>Community</li>
           <li>Resources</li>
-          <Button className="bg-blue-400 py-2 mx-2 rounded-md text-white cursor-pointer">
-          </Button>
-          <Button className="bg-gray-300 py-2 rounded-md text-black cursor-pointer w-10">
-          </Button>
+          <div className="mx-2 rounded-md text-white cursor-pointer">
+            <img className="w-10 rounded-full" src={avatar} alt="avatar" />
+          </div>
         </ul> : <ul className="inline-flex space-x-5 mx-4">
           <li>Features</li>
           <li>Pricing</li>
