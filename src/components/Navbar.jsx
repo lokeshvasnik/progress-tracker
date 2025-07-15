@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { auth } from "./firebase";
 import { Link } from "react-router-dom"
 import Button from "./Button"
 import avatar from '../assets/profile.jpg'
 
-const Navbar = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+const Navbar = ({ isAuthenticated }) => {
+
+  console.log('Is Authenticated:', isAuthenticated);
+
+  const logoutHandler = async () => {
+    await auth.signOut();
+  }
 
   return (
     <nav className="flex justify-between p-5 border-b-2 border-gray-200">
@@ -21,7 +26,10 @@ const Navbar = () => {
           <div className="mx-2 rounded-md text-white cursor-pointer">
             <img className="w-10 rounded-full" src={avatar} alt="avatar" />
           </div>
-        </ul> : <ul className="inline-flex space-x-5 mx-4">
+          <Button onClick={logoutHandler} className="bg-red-500 mx-2 rounded-md text-white cursor-pointer">
+            Logout
+          </Button>
+        </ul> : <ul className="inline-flex space-x-5 mx-4 items-center">
           <li>Features</li>
           <li>Pricing</li>
           <li>Support</li>

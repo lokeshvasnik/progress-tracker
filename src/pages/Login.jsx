@@ -40,8 +40,8 @@ const Login = () => {
         </div>
 
         <div>
-          <label htmlFor="description" className="block font-medium mb-1">Password</label>
-          <textarea
+          <label htmlFor="password" className="block font-medium mb-1">Password</label>
+          <input
             type="password"
             className="form-control w-full my-4 border-b p-2"
             placeholder="Enter password"
