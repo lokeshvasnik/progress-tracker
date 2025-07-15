@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../components/Button"
 import { Line, LineChart, ResponsiveContainer, XAxis } from 'recharts';
 import Modal from "../components/Modal";
-
+import { auth, db } from "../components/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 const data = [
     {
@@ -131,6 +132,7 @@ const data = [
 
 const Dashboard = () => {
     const [modalOpen, setIsModalOpen] = useState(false)
+    const [userDetails, setUserDetails] = useState(null);
 
     const closeModalHandler = () => {
         setIsModalOpen(false)
@@ -141,10 +143,36 @@ const Dashboard = () => {
 
     const progressPercent = Math.round((currentProgressData / totalChallengeDays) * 100);
 
+    const fetchUserData = async () => {
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                console.log("User is logged in:", user);
+
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    setUserDetails(docSnap.data());
+                    console.log("User details:", docSnap.data());
+                } else {
+                    console.log("No user data found in Firestore.");
+                }
+            } else {
+                console.log("User is not logged in.");
+            }
+        });
+
+    };
+
+    useEffect(() => {
+        fetchUserData();
+    }, []);
+
+    console.log('userDetails',userDetails)
 
     return (
         <div className="max-w-9/12 mx-auto">
-            <h1 className="font-black text-4xl my-4">Welcome back, Emily!</h1>
+            <h1 className="font-black text-4xl my-4">Welcome back, {userDetails?.firstName.toLowerCase()}! 🎉</h1>
             <p className="text-slate-700 my-4">Day 12 of 30! Keep going!</p>
 
             <h3 className="my-4">The only way to do great work is to love what you do. - Steve Jobs</h3>
@@ -169,7 +197,7 @@ const Dashboard = () => {
             {/* Streak */}
             <div className="border border-slate-300 rounded-md p-5 my-10">
                 <h4 className="font-medium">Streak</h4>
-                <p className="font-black text-3xl">12 days</p>
+                <p className="font-black text-3xl">{currentProgressData} days</p>
             </div>
 
             <div className="mb-10">

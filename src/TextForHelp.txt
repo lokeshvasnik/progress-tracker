@@ -31,3 +31,8 @@ const progressPercent = Math.round((currentProgressDays / totalChallengeDays) * 
 progressPercent = Math.round((17 / 30) * 100) = 57%
 
 
+Day One
+
+1. Authencatio in this application via firebase - 16 July 2025
+
+Signup > Firestore > Auth > Login > Check > Dashboard 
