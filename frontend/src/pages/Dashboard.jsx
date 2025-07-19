@@ -4,6 +4,7 @@ import { Line, LineChart, ResponsiveContainer, XAxis } from 'recharts';
 import Modal from "../components/Modal";
 import { auth, db } from "../components/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
     const [modalOpen, setIsModalOpen] = useState(null)
@@ -29,10 +30,10 @@ const Dashboard = () => {
                     if (docSnap.exists()) {
                         setUserDetails(docSnap.data());
                     } else {
-                        console.log("No user data found in Firestore.");
+                        toast.error("No user data found in Firestore.");
                     }
                 } else {
-                    console.log("User is not logged in.");
+                    toast.error("User is not logged in.");
                 }
             });
 
@@ -46,7 +47,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchQuote = async () => {
             try {
-                const response = await fetch("https://thequoteshub.com/api/");
+                const response = await fetch(`${import.meta.env.VITE_QUOTE_API_KEY}`);
                 const quote = await response.json();
                 setQuoteData(quote);
                
@@ -61,25 +62,27 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchEntryData = async () => {
             try {
-                // const response = await fetch(`http://localhost:5000/api/entries?uid=${userDetails?.uid}`);
-                const response = await fetch(`http://localhost:5000/api/entries/3G0zzLd9DDg7RZ6ELDd1Wd3gO7n2`);
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/entries/${userDetails?.uid}`);
+
 
                 if (!response.ok) throw new Error("Failed to fetch entries");
                 const entries = await response.json();
                 setEntriesData(entries);
             } catch (error) {
-                console.error("Error fetching entries:", error);
+                toast.error("Error fetching entries:", error);
             }
         }
 
-        fetchEntryData();
-    }, [])
+        if (userDetails?.uid) {
+            fetchEntryData();
+        }
+    }, [userDetails?.uid])
     
 
     return (
         <div className="max-w-9/12 mx-auto">
             <h1 className="font-black text-4xl my-4">Welcome back, {userDetails?.firstName.toLowerCase()}! 🎉</h1>
-            <p className="text-slate-700 my-4">Day 12 of 30! Keep going!</p>
+            <p className="text-slate-700 my-4">Day {new Date().getDate()} of 30! Keep going!</p>
 
             <h3 className="my-4">{quoteData?.text} - {quoteData?.author}</h3>
 
@@ -94,7 +97,7 @@ const Dashboard = () => {
                 </div>
                 <ResponsiveContainer width="100%" height={200}>
                     <LineChart width={300} height={100} data={entriesData}>
-                        <XAxis dataKey="name" />
+                        <XAxis dataKey={entriesData?.date?.toLocaleString()} />
                         <Line type="monotone" dataKey="productivity" stroke="#8884d8" strokeWidth={2} />
                     </LineChart>
                 </ResponsiveContainer>

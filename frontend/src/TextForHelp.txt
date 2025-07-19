@@ -74,3 +74,8 @@ Make the UI proper and start with node js backend integration part easy and simp
 
 Making this web app production level
 
+1. Make more good UI
+2. Make production ready
+3. Make good and give it to one user
+
+
