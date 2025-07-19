@@ -78,6 +78,8 @@ const Dashboard = () => {
         }
     }, [userDetails?.uid])
     
+    if (!entriesData) return <p>Loading your progress...</p>
+
 
     return (
         <div className="max-w-9/12 mx-auto">
@@ -97,7 +99,7 @@ const Dashboard = () => {
                 </div>
                 <ResponsiveContainer width="100%" height={200}>
                     <LineChart width={300} height={100} data={entriesData}>
-                        <XAxis dataKey={entriesData?.date?.toLocaleString()} />
+                        <XAxis label={{ value: entriesData?.date?.toLocaleDateString(), position: "insideBottom" }}  />
                         <Line type="monotone" dataKey="productivity" stroke="#8884d8" strokeWidth={2} />
                     </LineChart>
                 </ResponsiveContainer>

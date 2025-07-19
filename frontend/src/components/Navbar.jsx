@@ -1,11 +1,10 @@
 import { auth } from "./firebase";
 import { Link } from "react-router-dom"
+import { Power } from 'lucide-react';
 import Button from "./Button"
 import avatar from '../assets/profile.jpg'
 
 const Navbar = ({ isAuthenticated }) => {
-
-  console.log('Is Authenticated:', isAuthenticated);
 
   const logoutHandler = async () => {
     await auth.signOut();
@@ -18,16 +17,16 @@ const Navbar = ({ isAuthenticated }) => {
       </div>
       <div>
         {isAuthenticated ? <ul className="inline-flex space-x-5 mx-4 items-center">
-          <li>Dashboard</li>
-          <li>Roadmaps</li>
-          <li>Challenges</li>
-          <li>Community</li>
-          <li>Resources</li>
+          <Link to="/dashboard">Dashboard</Link>
+          <Link to="/month">Last Month Stats</Link>
+          {/* <li>Challenges</li>
+          <li>Community</li> */}
+          {/* <li>Resources</li> */}
           <div className="mx-2 rounded-md text-white cursor-pointer">
             <img className="w-10 rounded-full" src={avatar} alt="avatar" />
           </div>
-          <Button onClick={logoutHandler} className="bg-red-500 mx-2 rounded-md text-white cursor-pointer">
-            Logout
+          <Button onClick={logoutHandler} className="mx-2 rounded-md text-black cursor-pointer">
+            <Power />
           </Button>
         </ul> : <ul className="inline-flex space-x-5 mx-4 items-center">
           <li>Features</li>

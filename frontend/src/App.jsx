@@ -8,6 +8,8 @@ import Signup from './pages/Signup';
 import { auth } from './components/firebase';
 
 import './App.css';
+import Month from './pages/Month';
+import NotFound from './pages/NotFound';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -46,6 +48,14 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/month"
+          element={
+            <PrivateRoute>
+              <Month />
+            </PrivateRoute>
+          }/>
+      <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
