@@ -131,8 +131,9 @@ const data = [
 
 
 const Dashboard = () => {
-    const [modalOpen, setIsModalOpen] = useState(false)
+    const [modalOpen, setIsModalOpen] = useState(null)
     const [userDetails, setUserDetails] = useState(null);
+    const [quoteData, setQuoteData] = useState(null);
 
     const closeModalHandler = () => {
         setIsModalOpen(false)
@@ -143,39 +144,52 @@ const Dashboard = () => {
 
     const progressPercent = Math.round((currentProgressData / totalChallengeDays) * 100);
 
-    const fetchUserData = async () => {
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                console.log("User is logged in:", user);
-
-                const docRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    setUserDetails(docSnap.data());
-                    console.log("User details:", docSnap.data());
-                } else {
-                    console.log("No user data found in Firestore.");
-                }
-            } else {
-                console.log("User is not logged in.");
-            }
-        });
-
-    };
-
     useEffect(() => {
+        const fetchUserData = async () => {
+            const unsubscribe = auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    const docRef = doc(db, "users", user.uid);
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        setUserDetails(docSnap.data());
+                    } else {
+                        console.log("No user data found in Firestore.");
+                    }
+                } else {
+                    console.log("User is not logged in.");
+                }
+            });
+
+            // Optional: Return unsubscribe for cleanup
+            return unsubscribe;
+        };
+
         fetchUserData();
     }, []);
 
-    console.log('userDetails',userDetails)
+    useEffect(() => {
+        const fetchQuote = async () => {
+            try {
+                const response = await fetch("https://thequoteshub.com/api/");
+                const quote = await response.json();
+                setQuoteData(quote);
+               
+            } catch (error) {
+                console.error("Failed to fetch quote:", error);
+            }
+        };
+
+        fetchQuote();
+    }, []);
+
+     console.log(quoteData)
 
     return (
         <div className="max-w-9/12 mx-auto">
             <h1 className="font-black text-4xl my-4">Welcome back, {userDetails?.firstName.toLowerCase()}! 🎉</h1>
             <p className="text-slate-700 my-4">Day 12 of 30! Keep going!</p>
 
-            <h3 className="my-4">The only way to do great work is to love what you do. - Steve Jobs</h3>
+            <h3 className="my-4">{quoteData?.text} - {quoteData?.author}</h3>
 
             {/* Challenge Progress */}
 

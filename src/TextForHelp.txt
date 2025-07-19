@@ -35,4 +35,31 @@ Day One
 
 1. Authencatio in this application via firebase - 16 July 2025
 
-Signup > Firestore > Auth > Login > Check > Dashboard 
+Signup > Firestore > Auth > Login > Check > Dashboard - 16 July 2026 12.00 AM
+
+Tomorrow task - Understand the firebase and usefffect logic ask doubts to chatgpt 
+
+Make the UI proper and start with node js backend integration part easy and simple
+
+----------------
+
+16 July Task - 
+
+✅ Firebase Auth + Express + MongoDB Setup Tasks
+
+ Get current user uid using auth.currentUser.uid (on frontend)
+
+ Send data to Express backend with uid in the body
+
+ In Express, receive and store data in MongoDB using that uid
+
+ Create route to fetch all progress data by uid
+
+ Add PATCH/PUT route to update progress entry by uid + date
+
+ (Optional) Send Firebase Auth token in header and verify it in backend using firebase-admin
+
+ Use fetched data in Dashboard to show charts, streaks, etc.
+
+ Structure MongoDB schema for progress (fields: uid, date, mood, productivity, description)
+
