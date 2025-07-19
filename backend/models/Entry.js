@@ -6,7 +6,7 @@ const entrySchema = new mongoose.Schema({
   description: String,
   category: String,
   mood: String,
-  productivity: Number,
+  productivity: String,
   date: { type: Date, default: Date.now },
 });
 

@@ -4,7 +4,7 @@ import Button from "./Button"
 const API_URL = "https://crudcrud.com/api/a6d79d4fd6024834b9f14670fa683783";
 
 
-const Modal = ({ closeModalHandler, modalOpen }) => {
+const Modal = ({ closeModalHandler, modalOpen, userUid }) => {
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -24,17 +24,17 @@ const Modal = ({ closeModalHandler, modalOpen }) => {
         e.preventDefault();
 
         const progressData = {
-            name: `User 1`, // or your logic
             title,
             description,
             category,
             mood,
             productivity: Number(productivityLevel),
-            date: new Date().toISOString(),
+            // date: new Date().toISOString(),
+            uid: userUid, 
         };
 
         try {
-            const response = await fetch(`${API_URL}/progress`, {
+            const response = await fetch(`http://localhost:5000/api/entries`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -67,6 +67,7 @@ const Modal = ({ closeModalHandler, modalOpen }) => {
                         placeholder="What did you learn?"
                         className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         onChange={(e) => setTitle(e.target.value)}
+                        value={title}
                     />
                 </div>
 
@@ -77,6 +78,7 @@ const Modal = ({ closeModalHandler, modalOpen }) => {
                         placeholder="Write a detailed description..."
                         className="w-full border border-gray-300 p-2 rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                         onChange={(e) => setDescription(e.target.value)}
+                        value={description}
                     />
                 </div>
 
@@ -87,6 +89,7 @@ const Modal = ({ closeModalHandler, modalOpen }) => {
                         name="category"
                         className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         onChange={(e) => setCategory(e.target.value)}
+                        value={category}
                     >
                         <option value="">Select category</option>
                         <option value="javascript">JavaScript</option>
@@ -103,6 +106,7 @@ const Modal = ({ closeModalHandler, modalOpen }) => {
                         name="mood"
                         className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         onChange={(e) => setMood(e.target.value)}
+                        value={mood}
                     >
                         <option value="">How do you feel?</option>
                         <option value="happy">😄 Happy</option>
@@ -118,6 +122,7 @@ const Modal = ({ closeModalHandler, modalOpen }) => {
                         name="productivity"
                         className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         onChange={(e) => setProductivityLevel(e.target.value)}
+                        value={productivityLevel}
                     >
                         <option value="">Rate your productivity</option>
                         <option value="1">😴 1 - Lazy</option>

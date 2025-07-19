@@ -63,3 +63,14 @@ Make the UI proper and start with node js backend integration part easy and simp
 
  Structure MongoDB schema for progress (fields: uid, date, mood, productivity, description)
 
+
+ ----------
+
+ 19th July 
+
+ 1. Integration of backend is completed
+ 2. Used mongodb and express for creating the backend
+ 3. Integration with frontend is also done
+
+Making this web app production level
+
