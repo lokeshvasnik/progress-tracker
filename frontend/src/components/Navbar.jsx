@@ -18,7 +18,8 @@ const Navbar = ({ isAuthenticated }) => {
       <div>
         {isAuthenticated ? <ul className="inline-flex space-x-5 mx-4 items-center">
           <Link to="/dashboard">Dashboard</Link>
-          <Link to="/month">Last Month Stats</Link>
+          <Link to="/month">Previous Stats</Link>
+          <Link to="/history">History</Link>
           {/* <li>Challenges</li>
           <li>Community</li> */}
           {/* <li>Resources</li> */}

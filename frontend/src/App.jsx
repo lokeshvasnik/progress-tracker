@@ -10,6 +10,7 @@ import { auth } from './components/firebase';
 import './App.css';
 import Month from './pages/Month';
 import NotFound from './pages/NotFound';
+import History from './pages/History';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -54,8 +55,15 @@ function App() {
             <PrivateRoute>
               <Month />
             </PrivateRoute>
-          }/>
-      <Route path="*" element={<NotFound />} />
+          } />
+        <Route
+          path="/history"
+          element={
+            <PrivateRoute>
+              <History />
+            </PrivateRoute>
+          } />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
