@@ -42,59 +42,79 @@ const Signup = () => {
 
     }
     return (
-        <div className='p-5 rounded-lg shadow-md max-w-md mx-auto mt-10'>
-            <form className="space-y-4" onSubmit={handleRegister}>
-                <h3>Sign Up</h3>
+        <div className="p-8 rounded-2xl max-w-md mx-auto bg-white">
+            <form className="space-y-6" onSubmit={handleRegister}>
+                <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Sign Up</h2>
 
-                <div className="mb-3">
-                    <label htmlFor="title" className="block font-medium mb-1">First name</label>
+                <div>
+                    <label htmlFor="fname" className="block text-sm font-semibold mb-2 text-gray-700">
+                        First Name
+                    </label>
                     <input
                         type="text"
-                        className="form-control w-full my-4 border-b p-2"
+                        id="fname"
+                        className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ADB5] transition"
                         placeholder="First name"
                         onChange={(e) => setFname(e.target.value)}
                         required
                     />
                 </div>
 
-                <div className="mb-3">
-                    <label htmlFor="description" className="block font-medium mb-1">Last name</label>
+                <div>
+                    <label htmlFor="lname" className="block text-sm font-semibold mb-2 text-gray-700">
+                        Last Name
+                    </label>
                     <input
                         type="text"
-                        className="form-control w-full my-4 border-b p-2"
+                        id="lname"
+                        className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ADB5] transition"
                         placeholder="Last name"
                         onChange={(e) => setLname(e.target.value)}
                     />
                 </div>
 
-                <div className="mb-3">
-                    <label htmlFor="description" className="block font-medium mb-1">Email address</label>
+                <div>
+                    <label htmlFor="email" className="block text-sm font-semibold mb-2 text-gray-700">
+                        Email Address
+                    </label>
                     <input
                         type="email"
-                        className="form-control w-full my-4 border-b p-2"
+                        id="email"
+                        className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ADB5] transition"
                         placeholder="Enter email"
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </div>
 
-                <div className="mb-3">
-                    <label htmlFor="description" className="block font-medium mb-1">Password</label>
+                <div>
+                    <label htmlFor="password" className="block text-sm font-semibold mb-2 text-gray-700">
+                        Password
+                    </label>
                     <input
                         type="password"
-                        className="form-control w-full my-4 border-b p-2"
+                        id="password"
+                        className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ADB5] transition"
                         placeholder="Enter password"
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                 </div>
-                <div className='w-full flex justify-center items-center my-4'>
-                    <Button type="submit" className="bg-[#00ADB5] rounded-md text-white text-center mx-auto cursor-pointer w-28">
+
+                <div className="w-full flex justify-center mt-4">
+                    <button
+                        type="submit"
+                        className="bg-[#00ADB5] hover:bg-[#00949B] transition text-white font-medium rounded-lg px-6 py-2 shadow-md focus:outline-none focus:ring-2 focus:ring-[#00ADB5] focus:ring-offset-2"
+                    >
                         Sign Up
-                    </Button>
+                    </button>
+                    {/* Or use your custom <Button> instead of <button> */}
                 </div>
-                <p className="forgot-password text-right">
-                    Already registered <a href="/login">Login</a>
+                <p className="text-center text-sm text-gray-600 mt-4">
+                    Already registered?
+                    <a href="/login" className="text-[#00ADB5] hover:underline font-medium ml-1">
+                        Login
+                    </a>
                 </p>
             </form>
         </div>

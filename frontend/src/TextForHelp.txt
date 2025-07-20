@@ -87,10 +87,18 @@ Making this web app production level
 2. Daily should form should be only filled only after office work > Completed > ✅
 3. Form validation is must > Completed > ✅
 4. Form submit > backend check > if today's date is matching > Then show error message on frontend > ✅
-5. We will filter the history tab accordingly
-6. Make the chart tooltip for when it productivity level is less then show why it was less and what went wrong
 7. MVP PRODUCTION LEVEL CODE - ✅ Released
 8. Github > ✅ Completed 
 9. Component Web app > Restructure > ✅ Completed 
 
-Important Step - Make component tree strucutire and use state management too
+Now working on UI
+
+
+21st July Task
+
+5. We will filter the history tab accordingly
+6. Make the chart tooltip for when it productivity level is less then show why it was less and what went wrong
+
+Important Step - Make component tree strucutire and use state management too > Completed
+1. Code is optimzied
+2. Used zustand for state management

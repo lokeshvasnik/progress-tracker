@@ -17,6 +17,9 @@ import './App.css';
 import Loader from './components/Loader';
 import useUserStore from './store/userStore';
 import { doc, getDoc } from 'firebase/firestore';
+import Features from './pages/Features';
+import Pricing from './pages/Pricing';
+import Support from './pages/Support';
 
 function App() {
   const [loading, setLoading] = useState(true); // optional loading state
@@ -64,6 +67,10 @@ function App() {
         <Route path="/" element={user ? <Navigate to={routes.dashboard} /> : <Login />} />
         <Route path={routes.login} element={<Login />} />
         <Route path={routes.register} element={<Signup />} />
+        <Route path={routes.features} element={<Features />} />
+        <Route path={routes.pricing} element={<Pricing />} />
+        <Route path={routes.support} element={<Support />} />
+
         <Route
           path={routes.dashboard}
           element={

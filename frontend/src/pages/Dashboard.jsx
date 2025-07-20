@@ -44,34 +44,45 @@ const Dashboard = () => {
   if (!user || !entries) return <Loader />;
 
   return (
-    <div className="max-w-9/12 mx-auto">
-      <h1 className="font-black text-4xl my-4">
+    <div className="max-w-4xl mx-auto p-6 mt-10 rounded-2xl bg-white">
+      <h1 className="font-black text-4xl my-2 text-gray-800">
         Welcome back, {user?.firstName?.toLowerCase()}! 🎉
       </h1>
-      <p className="text-slate-700 my-4">
+      <p className="text-lg text-slate-600 my-2 font-medium">
         Day {new Date().getDate()} of 30! Keep going!
       </p>
 
       {quoteData?.text && (
-        <h3 className="my-4">
-          {quoteData.text} - {quoteData.author}
+        <h3 className="my-4 italic text-base text-[#00adb5] font-semibold">
+          "{quoteData.text}"
+          <span className="block text-sm text-gray-500 mt-1">- {quoteData.author}</span>
         </h3>
       )}
 
-      <ProgressChart
-        formattedData={formattedData}
-        progressPercent={progressPercent}
-      />
+      {/* Progress Section */}
+      <div className="my-8">
+        <ProgressChart
+          formattedData={formattedData}
+          progressPercent={progressPercent}
+        />
+      </div>
 
-      <StreakCard currentProgressData={currentProgressData} />
+      {/* Streak Card */}
+      <div className="my-6">
+        <StreakCard currentProgressData={currentProgressData} />
+      </div>
 
-      <Button
-        onClick={() => setIsModalOpen(true)}
-        className="bg-[#00ADB5] rounded-md mb-10 text-white cursor-pointer"
-      >
-        Add Progress
-      </Button>
+      {/* Add Progress Button */}
+      <div className="w-full flex justify-center my-8">
+        <Button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-[#00ADB5] hover:bg-[#09888e] transition rounded-lg text-white font-semibold px-8 py-2 mb-6 shadow-lg focus:outline-none focus:ring-2 focus:ring-[#00ADB5] focus:ring-offset-2"
+        >
+          Add Progress
+        </Button>
+      </div>
 
+      {/* Modal */}
       <Modal
         closeModalHandler={closeModalHandler}
         modalOpen={modalOpen}
@@ -79,6 +90,7 @@ const Dashboard = () => {
         entriesData={entries}
       />
     </div>
+
   );
 };
 
