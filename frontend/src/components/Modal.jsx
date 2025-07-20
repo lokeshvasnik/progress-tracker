@@ -2,16 +2,17 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button from "./Button"
 import * as yup from 'yup';
+import toast from 'react-hot-toast';
 
 const schema = yup.object().shape({
     title: yup.string().required("Title is required"),
     description: yup.string().required("Description is required"),
     category: yup.string().required("Category is required"),
     mood: yup.string().required("Mood is required"),
-    productivityLevel: yup.string().required("Productivity level is required").min(1, "Must be at least 1").max(10, "Must be at most 10"),
+    productivity: yup.string().required("Productivity level is required").min(1, "Must be at least 1").max(10, "Must be at most 10"),
 });
 
-const Modal = ({ closeModalHandler, modalOpen, userUid }) => {
+const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
 
     const {
         register,
@@ -25,6 +26,16 @@ const Modal = ({ closeModalHandler, modalOpen, userUid }) => {
 
     const formSubmitHandler = async (data) => {
 
+        const hasEntryForToday = entriesData?.some(entry => {
+            const entryDate = new Date(entry.date).toDateString();
+            const today = new Date().toDateString();
+            return entryDate === today && entry.uid === userUid;
+        });
+
+        if (hasEntryForToday) {
+            toast.error("You've already submitted an entry for today. 🛑");
+            return;
+        }
         const progressData = {
             uid: userUid,
             ...data
@@ -53,7 +64,7 @@ const Modal = ({ closeModalHandler, modalOpen, userUid }) => {
 
     return (
         <div className={`fixed top-0 right-0 w-[600px] overflow-auto h-screen bg-white p-8 shadow-lg bg-opacity-50 z-40 ${modalOpen ? 'block' : 'hidden'}`}>
-            <h1 className="font-black text-4xl my-4">Welcome back, Emily!</h1>
+            <h1 className="font-black text-4xl my-4">Dumb Your Progress Here...</h1>
 
             <form className="space-y-4" onSubmit={handleSubmit(formSubmitHandler)}>
                 <div>
@@ -118,14 +129,14 @@ const Modal = ({ closeModalHandler, modalOpen, userUid }) => {
                         id="productivity"
                         name="productivity"
                         className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        {...register("productivityLevel")}
+                        {...register("productivity")}
                     >
                         <option value="">Rate your productivity</option>
                         <option value="1">😴 1 - Lazy</option>
                         <option value="5">😐 5 - Average</option>
                         <option value="10">🚀 10 - Super productive</option>
                     </select>
-                    {errors.productivityLevel && <p className="text-red-500 my-1">{errors.productivityLevel.message}</p>}
+                    {errors.productivity && <p className="text-red-500 my-1">{errors.productivity.message}</p>}
                 </div>
 
                 <button

@@ -50,7 +50,7 @@ const Dashboard = () => {
                 const response = await fetch(`${import.meta.env.VITE_QUOTE_API_KEY}`);
                 const quote = await response.json();
                 setQuoteData(quote);
-               
+
             } catch (error) {
                 console.error("Failed to fetch quote:", error);
             }
@@ -77,8 +77,15 @@ const Dashboard = () => {
             fetchEntryData();
         }
     }, [userDetails?.uid])
-    
+
     if (!entriesData) return <p>Loading your progress...</p>
+
+    const formattedData = entriesData?.map((entry,index) => ({
+        ...entry,
+        day: new Date(entry.date).getUTCDate(),
+    }));
+
+    console.log('formattedData', formattedData);
 
 
     return (
@@ -88,8 +95,6 @@ const Dashboard = () => {
 
             <h3 className="my-4">{quoteData?.text} - {quoteData?.author}</h3>
 
-            {/* Challenge Progress */}
-
             {/* Progress  Chart */}
             <div className="border border-slate-300 rounded-md p-5 my-10">
                 <div>
@@ -98,8 +103,8 @@ const Dashboard = () => {
                     <p className="text-slate-700 mb-4">Last 30 Days +10%</p>
                 </div>
                 <ResponsiveContainer width="100%" height={200}>
-                    <LineChart width={300} height={100} data={entriesData}>
-                        <XAxis label={{ value: entriesData?.date?.toLocaleDateString(), position: "insideBottom" }}  />
+                    <LineChart width={300} height={100} data={formattedData}>
+                        <XAxis dataKey="day" label={{ position: "insideBottom", offset: -5 }} />
                         <Line type="monotone" dataKey="productivity" stroke="#8884d8" strokeWidth={2} />
                     </LineChart>
                 </ResponsiveContainer>
@@ -115,13 +120,9 @@ const Dashboard = () => {
                 <Button onClick={() => setIsModalOpen(true)} className="bg-[#00ADB5] mx-2 rounded-md text-white cursor-pointer">Add Progress</Button>
             </div>
 
-            <Modal closeModalHandler={closeModalHandler} modalOpen={modalOpen} userUid={userDetails?.uid}/>
-
+            <Modal closeModalHandler={closeModalHandler} modalOpen={modalOpen} userUid={userDetails?.uid} entriesData={entriesData} />
         </div>
     )
 }
 
 export default Dashboard
-
-
-// I should learn about redux and state management
