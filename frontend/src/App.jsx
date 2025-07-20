@@ -1,16 +1,20 @@
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { auth } from './components/firebase';
 
 import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import { auth } from './components/firebase';
 
-import './App.css';
 import Month from './pages/Month';
 import NotFound from './pages/NotFound';
 import History from './pages/History';
+import PrivateRoute from './components/PrivateRoute';
+import routes from './routes';
+
+import './App.css';
+import Loader from './components/Loader';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -27,39 +31,34 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
-
-  const PrivateRoute = ({ children }) => {
-    return user ? children : <Navigate to="/login" />;
-  };
-
+  if (loading) return <Loader/>;
 
   return (
     <Router>
       <Navbar isAuthenticated={isAuthenticated} />
       <Routes>
-        <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Login />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Signup />} />
+        <Route path="/" element={user ? <Navigate to={routes.dashboard} /> : <Login />} />
+        <Route path={routes.login} element={<Login />} />
+        <Route path={routes.register} element={<Signup />} />
         <Route
-          path="/dashboard"
+          path={routes.dashboard}
           element={
-            <PrivateRoute>
+            <PrivateRoute user={user}>
               <Dashboard />
             </PrivateRoute>
           }
         />
         <Route
-          path="/month"
+          path={routes.month}
           element={
-            <PrivateRoute>
+            <PrivateRoute user={user}>
               <Month />
             </PrivateRoute>
           } />
         <Route
-          path="/history"
+          path={routes.history}
           element={
-            <PrivateRoute>
+            <PrivateRoute user={user}>
               <History />
             </PrivateRoute>
           } />

@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
-import Button from "../components/Button"
-import { Line, LineChart, ResponsiveContainer, XAxis } from 'recharts';
-import Modal from "../components/Modal";
-import { auth, db } from "../components/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../components/firebase"
+;
+import Button from "../components/Button"
+import Modal from "../components/Modal";
 import toast from "react-hot-toast";
+
+import ProgressChart from "../components/ProgressChart";
+import StreakCard from "../components/StreakCard";
+import Loader from "../components/Loader";
 
 const Dashboard = () => {
     const [modalOpen, setIsModalOpen] = useState(null)
@@ -21,6 +25,7 @@ const Dashboard = () => {
 
     const progressPercent = Math.round((currentProgressData / totalChallengeDays) * 100);
 
+    // Fetch user data from Firestore
     useEffect(() => {
         const fetchUserData = async () => {
             const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -44,6 +49,7 @@ const Dashboard = () => {
         fetchUserData();
     }, []);
 
+    // Fetch quote data
     useEffect(() => {
         const fetchQuote = async () => {
             try {
@@ -59,6 +65,7 @@ const Dashboard = () => {
         fetchQuote();
     }, []);
 
+    // Fetch entries data
     useEffect(() => {
         const fetchEntryData = async () => {
             try {
@@ -78,15 +85,12 @@ const Dashboard = () => {
         }
     }, [userDetails?.uid])
 
-    if (!entriesData) return <p>Loading your progress...</p>
+    if (!entriesData) return <Loader/>;
 
     const formattedData = entriesData?.map((entry,index) => ({
         ...entry,
         day: new Date(entry.date).getUTCDate(),
     }));
-
-    console.log('formattedData', formattedData);
-
 
     return (
         <div className="max-w-9/12 mx-auto">
@@ -96,29 +100,11 @@ const Dashboard = () => {
             <h3 className="my-4">{quoteData?.text} - {quoteData?.author}</h3>
 
             {/* Progress  Chart */}
-            <div className="border border-slate-300 rounded-md p-5 my-10">
-                <div>
-                    <h4 className="font-medium">Progress Over Time</h4>
-                    <p className="font-black text-3xl my-2">{progressPercent}%</p>
-                    <p className="text-slate-700 mb-4">Last 30 Days +10%</p>
-                </div>
-                <ResponsiveContainer width="100%" height={200}>
-                    <LineChart width={300} height={100} data={formattedData}>
-                        <XAxis dataKey="day" label={{ position: "insideBottom", offset: -5 }} />
-                        <Line type="monotone" dataKey="productivity" stroke="#8884d8" strokeWidth={2} />
-                    </LineChart>
-                </ResponsiveContainer>
-            </div>
+            <ProgressChart formattedData={formattedData} progressPercent={progressPercent}/>
 
-            {/* Streak */}
-            <div className="border border-slate-300 rounded-md p-5 my-10">
-                <h4 className="font-medium">Streak</h4>
-                <p className="font-black text-3xl">{currentProgressData} days</p>
-            </div>
+            <StreakCard currentProgressData={currentProgressData} />
 
-            <div className="mb-10">
-                <Button onClick={() => setIsModalOpen(true)} className="bg-[#00ADB5] mx-2 rounded-md text-white cursor-pointer">Add Progress</Button>
-            </div>
+            <Button onClick={() => setIsModalOpen(true)} className="bg-[#00ADB5] rounded-md mb-10 text-white cursor-pointer">Add Progress</Button>
 
             <Modal closeModalHandler={closeModalHandler} modalOpen={modalOpen} userUid={userDetails?.uid} entriesData={entriesData} />
         </div>
