@@ -1,40 +1,37 @@
-import { useState } from "react"
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import Button from "./Button"
+import * as yup from 'yup';
 
-const API_URL = "https://crudcrud.com/api/a6d79d4fd6024834b9f14670fa683783";
-
+const schema = yup.object().shape({
+    title: yup.string().required("Title is required"),
+    description: yup.string().required("Description is required"),
+    category: yup.string().required("Category is required"),
+    mood: yup.string().required("Mood is required"),
+    productivityLevel: yup.string().required("Productivity level is required").min(1, "Must be at least 1").max(10, "Must be at most 10"),
+});
 
 const Modal = ({ closeModalHandler, modalOpen, userUid }) => {
 
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [category, setCategory] = useState('');
-    const [mood, setMood] = useState('');
-    const [productivityLevel, setProductivityLevel] = useState('');
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm({
+        resolver: yupResolver(schema)
+    });
 
-    const resetForm = () => {
-        setTitle("");
-        setDescription("");
-        setCategory("");
-        setMood("");
-        setProductivityLevel("");
-    };
 
-    const formSubmitHandler = async (e) => {
-        e.preventDefault();
+    const formSubmitHandler = async (data) => {
 
         const progressData = {
-            title,
-            description,
-            category,
-            mood,
-            productivity: Number(productivityLevel),
-            // date: new Date().toISOString(),
-            uid: userUid, 
-        };
+            uid: userUid,
+            ...data
+        }
 
         try {
-            const response = await fetch(`http://localhost:5000/api/entries`, {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/entries`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -45,7 +42,7 @@ const Modal = ({ closeModalHandler, modalOpen, userUid }) => {
             if (!response.ok) throw new Error("Failed to submit");
 
             alert("Progress submitted! 🎉");
-            resetForm();
+            reset();
             closeModalHandler();
         } catch (err) {
             alert("Error submitting progress.");
@@ -58,7 +55,7 @@ const Modal = ({ closeModalHandler, modalOpen, userUid }) => {
         <div className={`fixed top-0 right-0 w-[600px] overflow-auto h-screen bg-white p-8 shadow-lg bg-opacity-50 z-40 ${modalOpen ? 'block' : 'hidden'}`}>
             <h1 className="font-black text-4xl my-4">Welcome back, Emily!</h1>
 
-            <form className="space-y-4" onSubmit={formSubmitHandler}>
+            <form className="space-y-4" onSubmit={handleSubmit(formSubmitHandler)}>
                 <div>
                     <label htmlFor="title" className="block font-medium mb-1">Today's Title</label>
                     <input
@@ -66,9 +63,9 @@ const Modal = ({ closeModalHandler, modalOpen, userUid }) => {
                         type="text"
                         placeholder="What did you learn?"
                         className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        onChange={(e) => setTitle(e.target.value)}
-                        value={title}
+                        {...register("title")}
                     />
+                    {errors.title && <p className="text-red-500 my-1">{errors.title.message}</p>}
                 </div>
 
                 <div>
@@ -77,9 +74,9 @@ const Modal = ({ closeModalHandler, modalOpen, userUid }) => {
                         id="description"
                         placeholder="Write a detailed description..."
                         className="w-full border border-gray-300 p-2 rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        onChange={(e) => setDescription(e.target.value)}
-                        value={description}
+                        {...register("description")}
                     />
+                    {errors.description && <p className="text-red-500 my-1">{errors.description.message}</p>}
                 </div>
 
                 <div>
@@ -88,8 +85,7 @@ const Modal = ({ closeModalHandler, modalOpen, userUid }) => {
                         id="category"
                         name="category"
                         className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        onChange={(e) => setCategory(e.target.value)}
-                        value={category}
+                        {...register("category")}
                     >
                         <option value="">Select category</option>
                         <option value="javascript">JavaScript</option>
@@ -97,6 +93,7 @@ const Modal = ({ closeModalHandler, modalOpen, userUid }) => {
                         <option value="dsa">DSA</option>
                         <option value="project">Project</option>
                     </select>
+                    {errors.category && <p className="text-red-500 my-1">{errors.category.message}</p>}
                 </div>
 
                 <div>
@@ -105,14 +102,14 @@ const Modal = ({ closeModalHandler, modalOpen, userUid }) => {
                         id="mood"
                         name="mood"
                         className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        onChange={(e) => setMood(e.target.value)}
-                        value={mood}
+                        {...register("mood")}
                     >
                         <option value="">How do you feel?</option>
                         <option value="happy">😄 Happy</option>
                         <option value="ok">😐 Okay</option>
                         <option value="sad">😞 Tired</option>
                     </select>
+                    {errors.mood && <p className="text-red-500 my-1">{errors.mood.message}</p>}
                 </div>
 
                 <div>
@@ -121,14 +118,14 @@ const Modal = ({ closeModalHandler, modalOpen, userUid }) => {
                         id="productivity"
                         name="productivity"
                         className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        onChange={(e) => setProductivityLevel(e.target.value)}
-                        value={productivityLevel}
+                        {...register("productivityLevel")}
                     >
                         <option value="">Rate your productivity</option>
                         <option value="1">😴 1 - Lazy</option>
                         <option value="5">😐 5 - Average</option>
                         <option value="10">🚀 10 - Super productive</option>
                     </select>
+                    {errors.productivityLevel && <p className="text-red-500 my-1">{errors.productivityLevel.message}</p>}
                 </div>
 
                 <button
@@ -147,6 +144,10 @@ const Modal = ({ closeModalHandler, modalOpen, userUid }) => {
             </Button>
         </div>
     )
-}
+
+};
+
+
+
 
 export default Modal

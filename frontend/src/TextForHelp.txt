@@ -79,3 +79,10 @@ Making this web app production level
 3. Make good and give it to one user
 4. Make protected routes for backend server apis as well
 
+
+
+20th July Task 
+
+1. Last 30 Days +10% - Calculation
+2. Daily should form should be only filled only after office work
+3. Form validation is must
