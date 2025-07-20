@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { auth } from './components/firebase';
+import { auth, db } from './components/firebase';
 
 import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
@@ -15,23 +15,47 @@ import routes from './routes';
 
 import './App.css';
 import Loader from './components/Loader';
+import useUserStore from './store/userStore';
+import { doc, getDoc } from 'firebase/firestore';
 
 function App() {
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // optional loading state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { user, setUser, setEntries } = useUserStore();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user);
-      setIsAuthenticated(!!user); // true if user exists
+    const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
+      if (authUser) {
+        const docSnap = await getDoc(doc(db, "users", authUser.uid));
+        if (docSnap.exists()) {
+          setUser({ uid: authUser.uid, ...docSnap.data() });
+          setIsAuthenticated(true);
+        }
+      } else {
+        setUser(null);
+        setIsAuthenticated(false);
+      }
+
+      // ✅ Mark auth check as complete
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  if (loading) return <Loader/>;
+
+// Fetch entries for the authenticated user
+
+  useEffect(() => {
+    if (user?.uid) {
+      fetch(`${import.meta.env.VITE_API_BASE_URL}/entries/${user.uid}`)
+        .then((res) => res.json())
+        .then(setEntries);
+    }
+  }, [user?.uid]);
+
+  if (loading) return <Loader />;
+
 
   return (
     <Router>
