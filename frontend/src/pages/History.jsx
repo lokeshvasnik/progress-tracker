@@ -1,4 +1,5 @@
 const History = () => {
+    // Here we will show the past logs of the user ( current month data only )
     return (
         <div className="max-w-9/12 mx-auto">
             <h1 className="font-black text-4xl my-4">Past Logs</h1>
