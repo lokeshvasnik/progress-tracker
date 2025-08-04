@@ -26,6 +26,8 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { user, setUser, setEntries } = useUserStore();
 
+  let currentMonth = new Date().getMonth() + 1; // Months are 0-indexed in JS
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
@@ -48,10 +50,9 @@ function App() {
 
 
 // Fetch entries for the authenticated user
-
   useEffect(() => {
     if (user?.uid) {
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/entries/${user.uid}`)
+      fetch(`${import.meta.env.VITE_API_BASE_URL}/entries/${user.uid}?month=0${currentMonth}&year=2025`)
         .then((res) => res.json())
         .then(setEntries);
     }
@@ -83,7 +84,7 @@ function App() {
           path={routes.month}
           element={
             <PrivateRoute user={user}>
-              <Month />
+              <Month  />
             </PrivateRoute>
           } />
         <Route

@@ -26,9 +26,9 @@ const Navbar = ({ isAuthenticated }) => {
             <li>
               <Link to="/dashboard" className="text-gray-800 font-medium hover:text-[#00ADB5] transition">Dashboard</Link>
             </li>
-            {/* <li>
+            <li>
           <Link to="/month" className="text-gray-800 font-medium hover:text-[#00ADB5] transition">Previous Stats</Link>
-        </li> */}
+        </li>
             <li>
               <Link to="/history" className="text-gray-800 font-medium hover:text-[#00ADB5] transition">History</Link>
             </li>

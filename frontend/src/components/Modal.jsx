@@ -106,10 +106,10 @@ const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
                         {...register("category")}
                     >
                         <option value="">Select category</option>
-                        <option value="javascript">JavaScript</option>
-                        <option value="react">React</option>
+                        <option value="personal">Personal Project</option>
+                        <option value="learning">Learning</option>
                         <option value="dsa">DSA</option>
-                        <option value="project">Project</option>
+                        <option value="other">Other</option>
                     </select>
                     {errors.category && <p className="text-xs text-red-500 mt-1">{errors.category.message}</p>}
                 </div>
