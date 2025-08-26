@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import Button from "./Button"
 import * as yup from 'yup';
 import toast from 'react-hot-toast';
+import emailjs from 'emailjs-com'
 
 const schema = yup.object().shape({
     title: yup.string().required("Title is required"),
@@ -22,6 +22,34 @@ const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
     } = useForm({
         resolver: yupResolver(schema)
     });
+
+    const sendEmail = async (formData) => {
+        try {
+            await emailjs.send(
+                import.meta.env.VITE_EMAIL_SERVICE_ID,
+                import.meta.env.VITE_EMAIL_TEMPLATE_ID,
+                {
+                    from_name: "Daily Progress App", // sender name (static or dynamic)
+                    from_email: "no-reply@progress.com", // safe fallback email
+                    message: `
+                Title: ${formData.title}
+                Description: ${formData.description}
+                Category: ${formData.category}
+                Mood: ${formData.mood}
+                Productivity: ${formData.productivity}
+                UID: ${formData.uid}
+              `,
+                    uid: formData.uid,
+                },
+                import.meta.env.VITE_EMAIL_PUBLIC_KEY  // Public key
+            );
+
+            toast.success("Email sent successfully!");
+        } catch (error) {
+            console.error("EmailJS Error:", error);
+            toast.error("Error in sending mail");
+        }
+    };
 
 
     const formSubmitHandler = async (data) => {
@@ -54,6 +82,7 @@ const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
             if (!response.ok) throw new Error("Failed to submit");
 
             alert("Progress submitted! 🎉");
+            sendEmail(progressData)
             reset();
             closeModalHandler();
         } catch (err) {
