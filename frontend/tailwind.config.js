@@ -1,4 +1,6 @@
+/** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',   // ⬅️ put this at the root level, not inside theme
   theme: {
     extend: {
       colors: {
@@ -16,4 +18,5 @@ export default {
       }
     },
   },
+  plugins: [],
 };

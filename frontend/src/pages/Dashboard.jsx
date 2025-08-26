@@ -46,18 +46,18 @@ const Dashboard = () => {
   if (!user || !entries) return <Loader />;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 mt-10 rounded-2xl bg-white">
-      <h1 className="font-black text-4xl my-2 text-gray-800">
+    <div className="max-w-4xl mx-auto p-6 mt-10 rounded-2xl bg-white dark:bg-[#272727]">
+      <h1 className="font-black text-4xl my-2 text-gray-800 dark:text-white">
         Welcome back, {user?.firstName?.toLowerCase()}! 🎉
       </h1>
-      <p className="text-lg text-slate-600 my-2 font-medium">
+      <p className="text-lg text-slate-600 dark:text-white my-2 font-medium">
         Day {new Date().getDate()} of 30! Keep going!
       </p>
 
       {quoteData?.text && (
         <h3 className="my-4 italic text-base text-[#00adb5] font-semibold">
           "{quoteData.text}"
-          <span className="block text-sm text-gray-500 mt-1">- {quoteData.author}</span>
+          <span className="block text-sm text-gray-500 mt-1 dark:text-white">- {quoteData.author}</span>
         </h3>
       )}
 

@@ -3,15 +3,29 @@ import { Link } from "react-router-dom"
 import { Power } from 'lucide-react';
 
 import avatar from '../assets/profile.jpg'
+import { useEffect, useState } from "react";
 
 const Navbar = ({ isAuthenticated }) => {
+
+  const [darkMode, setDarkMode] = useState(false);
+
+  console.log('darkMode', darkMode)
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkMode]);
 
   const logoutHandler = async () => {
     await auth.signOut();
   }
 
   return (
-    <nav className="flex justify-between items-center p-5 border-b-2 border-gray-200 bg-white shadow-sm">
+
+    <nav className="flex justify-between items-center p-5 border-b-2 border-gray-200 bg-white dark:bg-[#272727] shadow-sm text-gray-800 dark:text-white">
       {/* Logo / Brand */}
       <div>
         <h1 className="font-bold text-xl text-[#00ADB5] tracking-tight">
@@ -24,13 +38,13 @@ const Navbar = ({ isAuthenticated }) => {
         {isAuthenticated ? (
           <ul className="flex items-center space-x-6">
             <li>
-              <Link to="/dashboard" className="text-gray-800 font-medium hover:text-[#00ADB5] transition">Dashboard</Link>
+              <Link to="/dashboard" className="text-gray-800 dark:text-white font-medium hover:text-[#00ADB5] transition">Dashboard</Link>
             </li>
             <li>
-          <Link to="/month" className="text-gray-800 font-medium hover:text-[#00ADB5] transition">Previous Stats</Link>
-        </li>
+              <Link to="/month" className="text-gray-800 dark:text-white font-medium hover:text-[#00ADB5] transition">Previous Stats</Link>
+            </li>
             <li>
-              <Link to="/history" className="text-gray-800 font-medium hover:text-[#00ADB5] transition">History</Link>
+              <Link to="/history" className="text-gray-800 dark:text-white font-medium hover:text-[#00ADB5] transition">History</Link>
             </li>
             {/* Add more links/features as needed */}
 
@@ -50,6 +64,11 @@ const Navbar = ({ isAuthenticated }) => {
                 <Power className="w-6 h-6" />
               </button>
             </li>
+            <button
+              onClick={() => setDarkMode(!darkMode)} className="p-2 rounded hover:bg-[#00ADB5] text-white bg-[#00Adb5] dark:bg-gray-700 cursor-pointer"
+            >
+              {darkMode ? "Light" : "Dark"}
+            </button>
           </ul>
         ) : (
           <ul className="flex items-center space-x-4">
