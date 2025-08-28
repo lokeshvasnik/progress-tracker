@@ -3,6 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import toast from 'react-hot-toast';
 import emailjs from 'emailjs-com'
+import useUserStore from '../store/userStore';
 
 const schema = yup.object().shape({
     title: yup.string().required("Title is required"),
@@ -13,6 +14,10 @@ const schema = yup.object().shape({
 });
 
 const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
+
+    const {user} = useUserStore()
+
+    console.log('userId',user)
 
     const {
         register,
@@ -31,6 +36,8 @@ const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
                 {
                     from_name: "Daily Progress App", // sender name (static or dynamic)
                     from_email: "no-reply@progress.com", // safe fallback email
+                    to_email: user.email,
+                    cc_email: `${user.email === 'lokeshvasnik2003@gmail.com' ? import.meta.env.VITE_EMAIL_CC_EMAIL : "" }`,
                     message: `
                 Title: ${formData.title}
                 Description: ${formData.description}

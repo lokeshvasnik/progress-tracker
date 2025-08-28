@@ -15,8 +15,6 @@ const Dashboard = () => {
 
   const { user, entries } = useUserStore();
 
-  console.log('Entries:', entries);
-
   const totalChallengeDays = 30;
   const currentProgressData = entries?.length || 0;
   const progressPercent = Math.round((currentProgressData / totalChallengeDays) * 100);
