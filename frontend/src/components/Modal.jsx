@@ -1,32 +1,53 @@
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import toast from 'react-hot-toast';
-import emailjs from 'emailjs-com'
-import useUserStore from '../store/userStore';
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import toast from "react-hot-toast";
+import emailjs from "emailjs-com";
+import useUserStore from "../store/userStore";
 
 const schema = yup.object().shape({
-    title: yup.string().required("Title is required"),
-    description: yup.string().required("Description is required"),
     category: yup.string().required("Category is required"),
-    mood: yup.string().required("Mood is required"),
-    productivity: yup.string().required("Productivity level is required").min(1, "Must be at least 1").max(10, "Must be at most 10"),
+    title: yup.string().when("category", {
+        is: (val) => val !== "other",
+        then: (schema) => schema.required("Title is required"),
+        otherwise: (schema) => schema.optional().nullable(),
+    }),
+    description: yup.string().when("category", {
+        is: (val) => val !== "other",
+        then: (schema) => schema.required("Description is required"),
+        otherwise: (schema) => schema.optional().nullable(),
+    }),
+    mood: yup.string().when("category", {
+        is: (val) => val !== "other",
+        then: (schema) => schema.required("Mood is required"),
+        otherwise: (schema) => schema.optional().nullable(),
+    }),
+    productivity: yup.string().when("category", {
+        is: (val) => val !== "other",
+        then: (schema) =>
+            schema
+                .required("Productivity level is required")
+                .min(1, "Must be at least 1")
+                .max(10, "Must be at most 10"),
+        otherwise: (schema) => schema.optional().nullable(),
+    }),
 });
 
+
 const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
-
-    const {user} = useUserStore()
-
-    console.log('userId',user)
+    const { user } = useUserStore();
 
     const {
         register,
         handleSubmit,
         reset,
+        watch,
         formState: { errors },
     } = useForm({
-        resolver: yupResolver(schema)
+        resolver: yupResolver(schema),
     });
+
+    const categoryWatch = watch("category");
 
     const sendEmail = async (formData) => {
         try {
@@ -34,13 +55,16 @@ const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
                 import.meta.env.VITE_EMAIL_SERVICE_ID,
                 import.meta.env.VITE_EMAIL_TEMPLATE_ID,
                 {
-                    from_name: "Daily Progress App", // sender name (static or dynamic)
-                    from_email: "no-reply@progress.com", // safe fallback email
+                    from_name: "Daily Progress App",
+                    from_email: "no-reply@progress.com",
                     to_email: user.email,
-                    cc_email: `${user.email === 'lokeshvasnik2003@gmail.com' ? import.meta.env.VITE_EMAIL_CC_EMAIL : "" }`,
+                    cc_email: `${user.email === "lokeshvasnik2003@gmail.com"
+                            ? import.meta.env.VITE_EMAIL_CC_EMAIL
+                            : ""
+                        }`,
                     message: `
                 Title: ${formData.title}
-                Description: ${formData.description}
+                Description: ${formData.description === "" ? "Week Off" : formData.description}
                 Category: ${formData.category}
                 Mood: ${formData.mood}
                 Productivity: ${formData.productivity}
@@ -48,7 +72,7 @@ const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
               `,
                     uid: formData.uid,
                 },
-                import.meta.env.VITE_EMAIL_PUBLIC_KEY  // Public key
+                import.meta.env.VITE_EMAIL_PUBLIC_KEY
             );
 
             toast.success("Email sent successfully!");
@@ -58,10 +82,20 @@ const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
         }
     };
 
-
     const formSubmitHandler = async (data) => {
+        // ✅ If category = "other", clear other fields
+        if (data.category === "other") {
+            data = {
+                ...data,
+                title: "",
+                description: "",
+                mood: "",
+                productivity: "",
+            };
+        }
 
-        const hasEntryForToday = entriesData?.some(entry => {
+        // ✅ Prevent duplicate entries for today
+        const hasEntryForToday = entriesData?.some((entry) => {
             const entryDate = new Date(entry.date).toDateString();
             const today = new Date().toDateString();
             return entryDate === today && entry.uid === userUid;
@@ -72,24 +106,28 @@ const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
             reset();
             return;
         }
+
         const progressData = {
             uid: userUid,
-            ...data
-        }
+            ...data,
+        };
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/entries`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(progressData),
-            });
+            const response = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/entries`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(progressData),
+                }
+            );
 
             if (!response.ok) throw new Error("Failed to submit");
 
             alert("Progress submitted! 🎉");
-            sendEmail(progressData)
+            sendEmail(progressData);
             reset();
             closeModalHandler();
         } catch (err) {
@@ -98,44 +136,68 @@ const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
         }
     };
 
-
     return (
-        <div className={`fixed top-0 right-0 w-full max-w-xl h-screen overflow-auto bg-white p-8 shadow-2xl z-40 transition-all duration-300 ${modalOpen ? 'block' : 'hidden'}`}>
+        <div
+            className={`fixed top-0 right-0 w-full max-w-xl h-screen overflow-auto bg-white p-8 shadow-2xl z-40 transition-all duration-300 ${modalOpen ? "block" : "hidden"
+                }`}
+        >
             <h1 className="font-black text-3xl md:text-4xl my-4 text-gray-800">
                 Dump Your Progress Here...
             </h1>
 
             <form className="space-y-5" onSubmit={handleSubmit(formSubmitHandler)}>
-
                 {/* Title */}
                 <div>
-                    <label htmlFor="title" className="block text-sm font-semibold text-gray-700 mb-1">Today's Title</label>
+                    <label
+                        htmlFor="title"
+                        className="block text-sm font-semibold text-gray-700 mb-1"
+                    >
+                        Today's Title
+                    </label>
                     <input
                         id="title"
                         type="text"
                         placeholder="What did you learn?"
+                        readOnly={categoryWatch === "other"} // ✅ readOnly instead of disabled
                         className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ADB5] transition"
                         {...register("title")}
                     />
-                    {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title.message}</p>}
+                    {errors.title && (
+                        <p className="text-xs text-red-500 mt-1">{errors.title.message}</p>
+                    )}
                 </div>
 
                 {/* Description */}
                 <div>
-                    <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
+                    <label
+                        htmlFor="description"
+                        className="block text-sm font-semibold text-gray-700 mb-1"
+                    >
+                        Description
+                    </label>
                     <textarea
                         id="description"
                         placeholder="Write a detailed description..."
                         className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ADB5] resize-none transition"
+                        readOnly={categoryWatch === "other"}
                         rows={4}
                         {...register("description")}
                     />
-                    {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>}
+                    {errors.description && (
+                        <p className="text-xs text-red-500 mt-1">
+                            {errors.description.message}
+                        </p>
+                    )}
                 </div>
 
                 {/* Category */}
                 <div>
-                    <label htmlFor="category" className="block text-sm font-semibold text-gray-700 mb-1">Category</label>
+                    <label
+                        htmlFor="category"
+                        className="block text-sm font-semibold text-gray-700 mb-1"
+                    >
+                        Category
+                    </label>
                     <select
                         id="category"
                         className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ADB5] transition"
@@ -147,14 +209,24 @@ const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
                         <option value="dsa">DSA</option>
                         <option value="other">Other</option>
                     </select>
-                    {errors.category && <p className="text-xs text-red-500 mt-1">{errors.category.message}</p>}
+                    {errors.category && (
+                        <p className="text-xs text-red-500 mt-1">
+                            {errors.category.message}
+                        </p>
+                    )}
                 </div>
 
                 {/* Mood */}
                 <div>
-                    <label htmlFor="mood" className="block text-sm font-semibold text-gray-700 mb-1">Mood</label>
+                    <label
+                        htmlFor="mood"
+                        className="block text-sm font-semibold text-gray-700 mb-1"
+                    >
+                        Mood
+                    </label>
                     <select
                         id="mood"
+                        readOnly={categoryWatch === "other"}
                         className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ADB5] transition"
                         {...register("mood")}
                     >
@@ -163,15 +235,23 @@ const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
                         <option value="ok">😐 Okay</option>
                         <option value="sad">😞 Tired</option>
                     </select>
-                    {errors.mood && <p className="text-xs text-red-500 mt-1">{errors.mood.message}</p>}
+                    {errors.mood && (
+                        <p className="text-xs text-red-500 mt-1">{errors.mood.message}</p>
+                    )}
                 </div>
 
                 {/* Productivity */}
                 <div>
-                    <label htmlFor="productivity" className="block text-sm font-semibold text-gray-700 mb-1">Productivity</label>
+                    <label
+                        htmlFor="productivity"
+                        className="block text-sm font-semibold text-gray-700 mb-1"
+                    >
+                        Productivity
+                    </label>
                     <select
                         id="productivity"
                         className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ADB5] transition"
+                        readOnly={categoryWatch === "other"}
                         {...register("productivity")}
                     >
                         <option value="">Rate your productivity</option>
@@ -179,7 +259,11 @@ const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
                         <option value="5">😐 5 - Average</option>
                         <option value="10">🚀 10 - Super productive</option>
                     </select>
-                    {errors.productivity && <p className="text-xs text-red-500 mt-1">{errors.productivity.message}</p>}
+                    {errors.productivity && (
+                        <p className="text-xs text-red-500 mt-1">
+                            {errors.productivity.message}
+                        </p>
+                    )}
                 </div>
 
                 {/* Submit Button */}
@@ -200,12 +284,7 @@ const Modal = ({ closeModalHandler, modalOpen, userUid, entriesData }) => {
                 Cancel
             </button>
         </div>
-
-    )
-
+    );
 };
 
-
-
-
-export default Modal
+export default Modal;
