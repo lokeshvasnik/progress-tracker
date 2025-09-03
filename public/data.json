@@ -52,5 +52,11 @@
         "data_username": "AppleIdLogin@example.com",
         "data_password": "applelogin",
         "data_color": "#efefef"
+    },
+    {
+        "data_title": "BGMI",
+        "data_username": "5122252197",
+        "data_password": "Nelson@5312",
+        "data_color": "#efefef"
     }
 ]
